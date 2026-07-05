@@ -1,40 +1,33 @@
-  name: Laravel CI
+name: Laravel CI
 
 on:
   push:
     branches:
       - main
-
   pull_request:
     branches:
       - main
 
 jobs:
-  laravel-tests:
-
+  test:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: "8.2"
 
       - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+        run: cp .env.example .env
 
-      - name: Install Composer Dependencies
-        run: composer install --no-progress --prefer-dist --no-interaction
+      - name: Install Composer
+        run: composer install --prefer-dist --no-interaction
 
-      - name: Generate Application Key
+      - name: Generate Key
         run: php artisan key:generate
-
-      - name: Give Permission
-        run: chmod -R 777 storage bootstrap/cache
 
       - name: Run Tests
         run: php artisan test
